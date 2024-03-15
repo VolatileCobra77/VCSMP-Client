@@ -60,7 +60,10 @@ class CustomLauncher:
         if modpack_folder:
             self.modpack_entry.delete(0, tk.END)
             self.modpack_entry.insert(0, modpack_folder)
-
+    def fetchVersions(self):
+        website_url = 'http://mc.mrpickle.ca/modpack'
+        files = self.fetch_zip_files(website_url)
+        self.update_dropdown_options(files)
     def update_modpack(self):
         modpack_folder = self.modpack_entry.get()
         selected_file = self.selected_file.get()
@@ -108,10 +111,13 @@ class CustomLauncher:
         for file in files:
             self.dropdown["menu"].add_command(label=file, command=tk._setit(self.selected_file, file))
         print("Updated Dropdown options")
-        root.after(60000, self.update_dropdown_options)
-
+    def loopFetch(self):
+        self.fetchVersions()
+        root.after(60000, self.loopFetch)
 
 if __name__ == "__main__":
+    
     root = tk.Tk()
     launcher = CustomLauncher(root)
+    launcher.loopFetch()
     root.mainloop()
